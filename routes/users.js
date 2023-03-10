@@ -44,8 +44,14 @@ router.post('/login', async (req, res) => {
 });
 
 router.put('/', user_jwt, async (req, res) => {
-	const user = await UserModel.findByIdAndUpdate(req.user.id, req.body, { new: true, runValidators: true })
-                    .select('-password');
+	const { name, phone, email, password } = req.body;
+	let user = await UserModel.findOne({ email });
+
+	const isPasswordValid = await bcrypt.compare(password, user.password);
+
+	if (!isPasswordValid) return res.status(400).json({ success: false, msg: 'Email or Password is Incorrect' });
+
+	user = await UserModel.findByIdAndUpdate(req.user.id, {name, phone}, { new: true, runValidators: true });
 
 	if (!user) return res.status(404).json({ success: false, msg: 'Something went wrong' });
 
