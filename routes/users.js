@@ -43,4 +43,13 @@ router.post('/login', async (req, res) => {
 	res.status(202).json({ success: true, token: token, userID: user.id, msg: 'User Logged In Successfully' });
 });
 
+router.put('/', user_jwt, async (req, res) => {
+	const user = await UserModel.findByIdAndUpdate(req.user.id, req.body, { new: true, runValidators: true })
+                    .select('-password');
+
+	if (!user) return res.status(404).json({ success: false, msg: 'Something went wrong' });
+
+	res.status(200).json({ success: true, msg: 'User Updated Successfully ' });
+});
+
 export { router as userRouter };
