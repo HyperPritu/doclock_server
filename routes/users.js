@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
 	const newUser = new UserModel({ name, email, phone, password: hashedPassword });
 	await newUser.save();
 
-	jwt.sign({ id: newUser.id }, process.env.SECRET, { expiresIn: 36000 }, (err, token) => {
+	jwt.sign({ id: newUser.id }, process.env.SECRET, (err, token) => {
 		if (err) throw err;
 		res.status(201).json({ success: true, token: token, msg: 'User Registered Successfully' });
 	});
@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
 
 	if (!isPasswordValid) return res.status(400).json({ success: false, msg: 'Email or Password is Incorrect' });
 
-	const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: 36000 });
+	const token = jwt.sign({ id: user.id }, process.env.SECRET);
 
 	res.status(202).json({ success: true, token: token, userID: user.id, msg: 'User Logged In Successfully' });
 });
