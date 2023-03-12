@@ -1,7 +1,8 @@
 import express from 'express';
 import { DocumentModel } from '../models/Document.js';
-import { v2 as cloudinary } from 'cloudinary';
 import auth from '../middleware/user_jwt.js';
+import multer from 'multer';
+import { fileUpload } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.get('/', auth, async (req, res) => {
 	res.status(200).json({ success: true, totalDocuments: documents.length });
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, multer({ storage: multer.memoryStorage() }).single('file'), async (req, res) => {
 	try {
 		const filename = req.body.filename;
 		const user = req.user.id;
@@ -19,17 +20,9 @@ router.post('/', auth, async (req, res) => {
 
 		if (isFileExist) return res.status(409).json({ success: false, msg: 'Document already exists!' });
 
-		const file = req.files.file;
+		const result = await fileUpload(req.file, 'documents');
 
-		const options = {
-			public_id: `${Date.now()}`,
-			resourse_type: 'auto',
-			folder: 'doclock',
-		};
-
-		const result = await cloudinary.uploader.upload(file.tempFilePath, options);
-
-		const newDocument = new DocumentModel({ public_id: result.public_id, filename: filename, file_url: result.url, user: user });
+		const newDocument = new DocumentModel({ public_id: result.public_id, filename, file_url: result.secure_url, user });
 		await newDocument.save();
 
 		res.status(200).json({ success: true, public_id: result.public_id, filename: filename, file_url: result.url, user: user });
