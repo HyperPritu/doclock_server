@@ -8,10 +8,10 @@ const router = express.Router();
 
 router.get('/', auth, async (req, res) => {
 	const documents = await DocumentModel.find({ user: req.user.id });
-	res.status(200).json({ success: true, totalDocuments: documents.length });
+	res.status(200).json({ success: true, totalDocuments: documents.length, documents });
 });
 
-router.post('/', auth, multer({ storage: multer.memoryStorage() }).single('file'), async (req, res) => {
+router.post('/', auth, multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }).single('file'), async (req, res) => {
 	try {
 		const filename = req.body.filename;
 		const user = req.user.id;
