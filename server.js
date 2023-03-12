@@ -8,8 +8,7 @@ dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
-app.use(express.json({limit: 10485760}));
-app.use(express.urlencoded({extended: true}));
+app.use(express.json({limit: '6mb'}));
 
 
 app.use('/auth', userRouter);
