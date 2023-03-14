@@ -13,7 +13,7 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', auth, multer({ storage: multer.memoryStorage() }).single('file'), async (req, res) => {
 	try {
-		console.log(JSON.stringify(req.body));
+		console.log(JSON.stringify(req.user));
 		const filename = req.body.filename;
 		const user = req.user.id;
 
