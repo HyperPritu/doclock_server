@@ -11,7 +11,7 @@ router.get('/', auth, async (req, res) => {
 	res.status(200).json({ success: true, totalDocuments: documents.length, documents });
 });
 
-router.post('/', auth, multer({ storage: multer.memoryStorage() }).single('file'), async (req, res) => {
+router.post('/', multer({ storage: multer.memoryStorage() }).single('file'), auth, async (req, res) => {
 	try {
 		console.log(JSON.stringify(req.file));
 		const filename = req.body.filename;
