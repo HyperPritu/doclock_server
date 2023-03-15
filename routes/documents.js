@@ -25,7 +25,7 @@ router.post('/', auth, multer({ storage: multer.memoryStorage() }).single('file'
 		const newDocument = new DocumentModel({ public_id: result.public_id, filename, file_url: result.secure_url, user });
 		await newDocument.save();
 
-		res.status(200).json({ success: true, public_id: result.public_id, filename: filename, file_url: result.url, user: user });
+		res.status(200).json({ success: true, msg: 'Uploaded Successfully', public_id: result.public_id, filename: filename, file_url: result.url, user: user });
 	} catch (error) {
 		console.warn(error);
 	}
