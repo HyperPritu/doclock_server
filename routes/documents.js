@@ -36,8 +36,10 @@ router.delete("/:project/:folder/:id", async (req, res) => {
   try {
     const public_id = req.params.project + "/" + req.params.folder + "/" + req.params.id;
     const result = await cloudinary.uploader.destroy(public_id);
-	if(result) await DocumentModel.findOneAndDelete({public_id});	
-    return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
+    if (result) {
+      // await DocumentModel.findOneAndDelete({ public_id });
+      return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
+    }
   } catch (e) {
     console.warn(e);
   }
