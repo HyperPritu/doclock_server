@@ -32,12 +32,13 @@ router.post("/", auth, multer({ storage: multer.memoryStorage() }).single("file"
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    const public_id = req.params.id;
-    console.log(req.params.id);
-    const result = await cloudinary.uploader.destroy(public_id);
-	return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
+    // const public_id = req.params.id;
+    // console.log(req.params.id);
+    // const result = await cloudinary.uploader.destroy(public_id);
+    // return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
+    console.log("hello");
   } catch (e) {
     console.warn(e);
   }
