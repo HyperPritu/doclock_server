@@ -35,7 +35,7 @@ router.post("/", auth, multer({ storage: multer.memoryStorage() }).single("file"
 router.delete("/:id", async (req, res) => {
   try {
     const public_id = req.params.id;
-    console.log(req.params.id);
+    console.log(req.params);
     const result = await cloudinary.uploader.destroy(public_id);
     return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
   } catch (e) {
