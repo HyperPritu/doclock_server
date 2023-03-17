@@ -3,6 +3,8 @@ import { DocumentModel } from "../models/Document.js";
 import auth from "../middleware/user_jwt.js";
 import multer from "multer";
 import { fileUpload } from "../config/cloudinary.js";
+import { v2 as cloudinary } from 'cloudinary';
+
 
 const router = express.Router();
 
