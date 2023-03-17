@@ -3,8 +3,7 @@ import { DocumentModel } from "../models/Document.js";
 import auth from "../middleware/user_jwt.js";
 import multer from "multer";
 import { fileUpload } from "../config/cloudinary.js";
-import { v2 as cloudinary } from 'cloudinary';
-
+import { v2 as cloudinary } from "cloudinary";
 
 const router = express.Router();
 
@@ -33,14 +32,12 @@ router.post("/", auth, multer({ storage: multer.memoryStorage() }).single("file"
   }
 });
 
-router.delete("/:public_id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const public_id = req.params.public_id;
-	console.log(public_id)
-    cloudinary.uploader.destroy(public_id, function (error) {
-      if (error) throw error;
-      else return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
-    });
+    const public_id = req.params.id;
+    console.log(req.params.id);
+    const result = await cloudinary.uploader.destroy(public_id);
+	return res.status(200).json({ success: true, msg: "Deleted Succesfully" });
   } catch (e) {
     console.warn(e);
   }
