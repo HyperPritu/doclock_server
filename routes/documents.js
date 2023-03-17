@@ -32,6 +32,31 @@ router.post("/", auth, multer({ storage: multer.memoryStorage() }).single("file"
   }
 });
 
+router.put("/:project/:folder/:id", auth, multer({ storage: multer.memoryStorage() }).single("file"), async (req, res) => {
+  try {
+    const public_id = req.params.project + "/" + req.params.folder + "/" + req.params.id;
+    const result = await cloudinary.uploader.destroy(public_id).then(await DocumentModel.findOneAndDelete({ public_id }));
+
+    if (result) {
+      const filename = req.body.filename;
+      const user = req.user.id;
+
+      const isFileExist = await DocumentModel.findOne({ filename, user });
+
+      if (isFileExist) return res.status(409).json({ success: false, msg: "Document already exists!" });
+
+      const result = await fileUpload(req.file, "documents");
+
+      const newDocument = new DocumentModel({ public_id: result.public_id, filename, file_url: result.secure_url, user });
+      await newDocument.save();
+
+      res.status(200).json({ success: true, msg: "Updated Successfully", public_id: result.public_id, filename: filename, file_url: result.url, user: user });
+    }
+  } catch (e) {
+    console.warn(e);
+  }
+});
+
 router.delete("/:project/:folder/:id", async (req, res) => {
   try {
     const public_id = req.params.project + "/" + req.params.folder + "/" + req.params.id;
